@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TweetsService } from './tweets.service';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
+import { FilterTweetDto } from './dto/filter-tweet.dto';
 
 @Controller('tweets')
 export class TweetsController {
@@ -17,12 +19,13 @@ export class TweetsController {
 
   @Post()
   create(@Body() createTweetDto: CreateTweetDto) {
+    console.log(createTweetDto);
     return this.tweetsService.create(createTweetDto);
   }
 
   @Get()
-  findAll() {
-    return this.tweetsService.findAll();
+  findAll(@Query() query: FilterTweetDto) {
+    return this.tweetsService.findAll(query);
   }
 
   @Get(':id')

@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
+import { FilterTweetDto } from './dto/filter-tweet.dto';
+import { Tweet } from './entities/tweet.entity';
 
 @Injectable()
 export class TweetsService {
-  tweets = [];
+  tweets: Tweet[] = [];
 
   create(createTweetDto: CreateTweetDto) {
     const maxId =
@@ -12,6 +14,7 @@ export class TweetsService {
     this.tweets.push({
       id: maxId,
       ...createTweetDto,
+      tweet_date: new Date(),
     });
     return {
       message: 'Tweet created successfully',
@@ -20,8 +23,31 @@ export class TweetsService {
     };
   }
 
-  findAll() {
-    return this.tweets;
+  findAll(query: FilterTweetDto) {
+    let filteredTweets = this.tweets;
+
+    if (query.tweet_date) {
+      console.log(query);
+      filteredTweets = filteredTweets.filter(
+        (tweet) => tweet.tweet_date == query.tweet_date,
+      );
+    }
+
+    if (query.tweet_text) {
+      console.log(query);
+      filteredTweets = filteredTweets.filter((tweet) =>
+        tweet.tweet_text.includes(query.tweet_text),
+      );
+    }
+
+    if (query.user_id) {
+      console.log(query);
+      filteredTweets = filteredTweets.filter(
+        (tweet) => tweet.user_id == tweet.user_id,
+      );
+    }
+
+    return filteredTweets;
   }
 
   findOne(id: number) {
